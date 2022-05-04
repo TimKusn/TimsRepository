@@ -1,0 +1,81 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        
+        HashMap<String, String> Sites_Today = new HashMap<>(); //сайты сегодня
+        HashMap<String, String> Sites_Yesterday = new HashMap<>(); //сайты вчера 
+        
+        
+        Set<String> keys_Today = new HashSet<String>();
+        keys_Today = Sites_Today.keySet(); //ключи(URLы) сайтов, которые есть сегодня
+        Set<String> keys_Yesterday = new HashSet<String>();
+        keys_Yesterday = Sites_Yesterday.keySet(); //ключи(URLы) сайтов, которые были вчера
+        
+
+        //в результате работы следующей части прогарммы
+        //в keys_Today останутся сайты, которых вчера небыло
+        //в keys_Yesterday останутся сайты, которых нет сегодня 
+        Set<String> change = new HashSet(); //сайты, HTML код которых изменилися
+        Set<String> not_change = new HashSet(); //сайты, HTML код которых не изменилися
+        
+        
+        Iterator<String> it = keys_Yesterday.iterator();  
+        while (it.hasNext()) {  
+            
+            String str = it.next();  
+            if(keys_Today.contains(str)){
+                
+                String str_yest_html = Sites_Yesterday.get(str); //HTML по этому URL вчера
+                String str_tod_html = Sites_Today.get(str); //HTML по этому URL сегодня 
+                
+                if(!str_yest_html.equals(str_tod_html)){ //HTML код изменился
+                    change.add(str);
+                }
+                else{ //HTML код не изменился
+                    not_change.add(str);
+                }
+                
+                keys_Today.remove(str);
+                //если ключи совпали, то соответсвующие сайты есть в оба дня
+            }
+        } 
+        
+        for (String str : not_change) {  
+            keys_Yesterday.remove(str); 
+        }  
+        for (String str : keys_Today) {
+            keys_Yesterday.remove(str); 
+        } 
+        for (String str : change) {  
+            keys_Yesterday.remove(str); 
+        } 
+        
+        // вывод ответа
+        System.out.println("Здравствуйте, дорогая и.о. секретаря! \n");
+        
+        if(keys_Yesterday.isEmpty()&&keys_Today.isEmpty()&&change.isEmpty()){
+            System.out.println("За последние сутки во вверенных Вам сайтах изменений не происходили.\n");
+        }
+        else{
+            System.out.println("За последние сутки во вверенных Вам сайтах произошли следующие изменения: ");
+            if(!keys_Yesterday.isEmpty()){
+                System.out.println("Исчели следующие страницы: ");
+                System.out.println(keys_Yesterday);
+            }
+            if(!keys_Today.isEmpty()){
+                System.out.println("Появились следующие страницы: ");
+                System.out.println(keys_Today);
+            }
+            if(!change.isEmpty()){
+                System.out.println("Изменились следующие страницы: ");
+                System.out.println(change);
+            }
+            
+        }
+
+        System.out.println("С уважением, \n");
+        System.out.println("автоматизированная система \n");
+        System.out.println("монитроинга.");
+    }
+}
